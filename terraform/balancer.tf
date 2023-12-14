@@ -13,6 +13,10 @@ resource "acme_certificate" "cert" {
 
   dns_challenge {
     provider = "digitalocean"
+
+    config = {
+      DO_AUTH_TOKEN = var.do_token
+    }
   }
 }
 

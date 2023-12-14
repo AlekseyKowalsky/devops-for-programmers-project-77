@@ -11,3 +11,11 @@ resource "digitalocean_droplet" "web-2" {
   region = "fra1"
   size   = "s-1vcpu-1gb"
 }
+
+output "web-1-ip" {
+  value = digitalocean_droplet.web-1.ipv4_address
+}
+
+output "web-2-ip" {
+  value = digitalocean_droplet.web-2.ipv4_address
+}
