@@ -39,7 +39,7 @@ resource "digitalocean_loadbalancer" "balancer" {
     entry_protocol  = "https"
     entry_port      = 443
     target_protocol = "http"
-    target_port     = 8080
+    target_port     = 3000
     certificate_name  = digitalocean_certificate.cert.name
   }
 
@@ -52,4 +52,12 @@ resource "digitalocean_loadbalancer" "balancer" {
     digitalocean_droplet.web-1.id,
     digitalocean_droplet.web-2.id,
   ]
+}
+
+resource "digitalocean_record" "lb_dns" {
+  domain = "alekspaces.com"
+  type   = "A"
+  name   = "@"
+  value  = digitalocean_loadbalancer.balancer.ip
+  ttl    = 3600
 }
