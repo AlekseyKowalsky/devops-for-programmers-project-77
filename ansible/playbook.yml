@@ -1,0 +1,61 @@
+- name: setup the application servers
+  hosts: all
+  become: yes
+  vars:
+    datadog_api_key: "{{ DATADOG_API_KEY }}"
+    datadog_site: "{{ DATADOG_SITE }}"
+    datadog_apm_instrumentation_enabled: "all"
+  roles:
+    - role: geerlingguy.pip
+      tags: setup
+
+  tasks:
+    - name: import the datadog agent role from the datadog collection
+      import_role:
+        name: datadog.dd.agent
+      tags: [setup, monitor]
+
+    - name: configure http_check
+      template:
+        src: http-check/config.j2
+        dest: /etc/datadog-agent/conf.d/http_check.yaml
+      notify: restart datadog agent
+      tags: [setup, monitor]
+
+    - name: generate .env file from template
+      template:
+        src: templates/.env.j2
+        dest: .env
+      tags: [deploy, app, config]
+
+    - name: run redmine docker container
+      community.docker.docker_container:
+        name: redmine_container
+        image: redmine:5.1.1
+        ports:
+          - "{{ REDMINE_PORT }}:3000"
+        restart_policy: always
+      register: redmine_container
+      tags: [deploy, app]
+
+    - name: verify redmine container is running
+      assert:
+        that:
+          - redmine_container is defined
+          - redmine_container.container.State.Running
+        fail_msg: "Redmine container is not running"
+        success_msg: "Redmine container is running"
+      tags: [deploy, app]
+
+    - name: Debugging output
+      debug:
+        var: redmine_container
+      when: redmine_container is failed
+      tags: [deploy, app]
+
+  handlers:
+    - name: restart datadog agent
+      ansible.builtin.service:
+        name: datadog-agent
+        state: restarted
+      tags: [deploy, app]
