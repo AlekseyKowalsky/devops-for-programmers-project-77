@@ -4,12 +4,12 @@ resource "tls_private_key" "private_key" {
 
 resource "acme_registration" "reg" {
   account_key_pem = tls_private_key.private_key.private_key_pem
-  email_address   = "al.kowalsky7@google.com"
+  email_address   = var.admin_email
 }
 
 resource "acme_certificate" "cert" {
   account_key_pem           = acme_registration.reg.account_key_pem
-  common_name               = "alekspaces.com"
+  common_name               = var.domain_name
 
   dns_challenge {
     provider = "digitalocean"
@@ -39,7 +39,7 @@ resource "digitalocean_loadbalancer" "balancer" {
     entry_protocol  = "https"
     entry_port      = 443
     target_protocol = "http"
-    target_port     = 3000
+    target_port     = var.app_port
     certificate_name  = digitalocean_certificate.cert.name
   }
 
@@ -55,7 +55,7 @@ resource "digitalocean_loadbalancer" "balancer" {
 }
 
 resource "digitalocean_record" "lb_dns" {
-  domain = "alekspaces.com"
+  domain = var.domain_name
   type   = "A"
   name   = "@"
   value  = digitalocean_loadbalancer.balancer.ip

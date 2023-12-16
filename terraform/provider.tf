@@ -12,6 +12,10 @@ terraform {
       source  = "hashicorp/tls"
       version = "~> 3.0"
     }
+    datadog = {
+      source = "DataDog/datadog"
+      version = "3.34.0"
+    }
   }
 }
 
@@ -24,3 +28,9 @@ provider "acme" {
 }
 
 provider "tls" {}
+
+provider "datadog" {
+  api_url = "https://api.datadoghq.eu/"
+  api_key = var.datadog_api_key
+  app_key = var.datadog_app_key
+}
