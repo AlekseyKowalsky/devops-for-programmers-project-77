@@ -47,10 +47,10 @@ make infra-destroy
 - check that [server-ips.yaml](ansible%2Fgroup_vars%2Fall%2Fserver-ips.yaml) includes actual IP addresses of servers. 
 - use make commands to encrypt/decrypt vault secrets in order to change them:
 ```bash
- make ansible-encrypt-vault
+make ansible-encrypt-vault
 ```
 ```bash
- make ansible-decrypt-vault
+make ansible-decrypt-vault
 ```
 
 2. Check availability of machines:
@@ -68,4 +68,10 @@ make ansible-setup-webservers
 5. Deploy and run the application on webservers :
 ```bash
 make ansible-deploy-webservers
+```
+
+## Quick creation of the website from scratch:
+In order to raise the website quickly, just after authorizing terraform and setting up variables and secrets, use the command:
+```bash
+make raise-from-scratch
 ```

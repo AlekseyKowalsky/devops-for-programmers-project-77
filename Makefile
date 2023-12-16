@@ -53,3 +53,10 @@ ansible-decrypt-vault:
 
 ansible-encrypt-vault:
 	ansible-vault encrypt ansible/group_vars/all/vault.decrypted.yml --output=ansible/group_vars/all/vault.yml --vault-password-file $(ANSIBLE_VAULT_PASSWORD_FILE)
+
+raise-from-scratch:
+	$(MAKE) infra-init
+	$(MAKE) infra-apply
+	$(MAKE) ansible-install-requirements
+	$(MAKE) ansible-setup-webservers
+	$(MAKE) ansible-deploy-webservers
