@@ -44,7 +44,7 @@ make infra-destroy
 > After the infrastructure was raised, it is allowed to setup servers and deploy the app on them
 1. Actualize ansible secrets in the [ansible/group_vars/all](ansible%2Fgroup_vars%2Fall)[ansible/group_vars/all](ansible%2Fgroup_vars) directory:
 - place there `.vault_pass` text file with the vault password for ansible secrets
-- check that [server-ips.yaml](ansible%2Fgroup_vars%2Fall%2Fserver-ips.yaml) includes actual IP addresses of servers. 
+- check that [server-ips.yaml](ansible%2Fgroup_vars%2Fall%2Fserver-ips.yaml) includes actual IP addresses of servers. However, default behavior is that terraform writes them by itself while creating machines.
 - use make commands to encrypt/decrypt vault secrets in order to change them:
 ```bash
 make ansible-encrypt-vault
