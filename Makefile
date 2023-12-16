@@ -1,5 +1,5 @@
 INFRA_VAULT_PASSWORD_FILE := terraform/.infra.vault_pass
-ANSIBLE_VAULT_PASSWORD_FILE := ansible/group_vars/webservers/.vault_pass
+ANSIBLE_VAULT_PASSWORD_FILE := ansible/group_vars/all/.vault_pass
 
 infra-vault-decrypt:
 	ansible-vault decrypt terraform/secrets/vault.yaml --output=terraform/secrets/vault.decrypted.yaml --vault-password-file $(INFRA_VAULT_PASSWORD_FILE)
@@ -40,19 +40,16 @@ ansible-check-webservers:
 	ansible all -m ping -i ./ansible/inventory.yml --vault-password-file $(ANSIBLE_VAULT_PASSWORD_FILE)
 
 ansible-install-requirements:
-	$(MAKE) ansible-encrypt-vault
 	ansible-galaxy install -r ansible/requirements.yml
 
 ansible-setup-webservers:
-	$(MAKE) ansible-encrypt-vault
 	ansible-playbook ansible/playbook.yml -i ansible/inventory.yml -t setup --vault-password-file $(ANSIBLE_VAULT_PASSWORD_FILE)
 
 ansible-deploy-webservers:
-	$(MAKE) ansible-encrypt-vault
 	ansible-playbook ansible/playbook.yml -i ansible/inventory.yml -t deploy --vault-password-file $(ANSIBLE_VAULT_PASSWORD_FILE)
 
 ansible-decrypt-vault:
-	ansible-vault decrypt ansible/group_vars/webservers/vault.yml --output=ansible/group_vars/webservers/vault.decrypted.yml --vault-password-file $(ANSIBLE_VAULT_PASSWORD_FILE)
+	ansible-vault decrypt ansible/group_vars/all/vault.yml --output=ansible/group_vars/all/vault.decrypted.yml --vault-password-file $(ANSIBLE_VAULT_PASSWORD_FILE)
 
 ansible-encrypt-vault:
-	ansible-vault encrypt ansible/group_vars/webservers/vault.decrypted.yml --output=ansible/group_vars/webservers/vault.yml --vault-password-file $(ANSIBLE_VAULT_PASSWORD_FILE)
+	ansible-vault encrypt ansible/group_vars/all/vault.decrypted.yml --output=ansible/group_vars/all/vault.yml --vault-password-file $(ANSIBLE_VAULT_PASSWORD_FILE)

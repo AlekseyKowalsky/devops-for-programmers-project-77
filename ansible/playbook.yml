@@ -17,7 +17,7 @@
 
     - name: configure http_check
       template:
-        src: http-check/config.j2
+        src: templates/config.j2
         dest: /etc/datadog-agent/conf.d/http_check.yaml
       notify: restart datadog agent
       tags: [setup, monitor]

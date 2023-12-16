@@ -1,2 +1,2 @@
-ansible/group_vars/webservers/vault.decrypted.yml
-ansible/group_vars/webservers/.vault_pass
+ansible/group_vars/all/vault.decrypted.yml
+ansible/group_vars/all/.vault_pass
