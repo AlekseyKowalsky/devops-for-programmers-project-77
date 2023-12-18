@@ -8,8 +8,8 @@ resource "acme_registration" "reg" {
 }
 
 resource "acme_certificate" "cert" {
-  account_key_pem           = acme_registration.reg.account_key_pem
-  common_name               = var.domain_name
+  account_key_pem = acme_registration.reg.account_key_pem
+  common_name     = var.domain_name
 
   dns_challenge {
     provider = "digitalocean"
@@ -21,9 +21,9 @@ resource "acme_certificate" "cert" {
 }
 
 resource "digitalocean_certificate" "cert" {
-  name    = "cert"
-  type    = "custom"
-  private_key = acme_certificate.cert.private_key_pem
+  name             = "cert"
+  type             = "custom"
+  private_key      = acme_certificate.cert.private_key_pem
   leaf_certificate = acme_certificate.cert.certificate_pem
 
   lifecycle {
@@ -36,11 +36,11 @@ resource "digitalocean_loadbalancer" "balancer" {
   region = "fra1"
 
   forwarding_rule {
-    entry_protocol  = "https"
-    entry_port      = 443
-    target_protocol = "http"
-    target_port     = var.app_port
-    certificate_name  = digitalocean_certificate.cert.name
+    entry_protocol   = "https"
+    entry_port       = 443
+    target_protocol  = "http"
+    target_port      = var.app_port
+    certificate_name = digitalocean_certificate.cert.name
   }
 
   healthcheck {

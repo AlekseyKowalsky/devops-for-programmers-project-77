@@ -1,10 +1,10 @@
 resource "datadog_synthetics_test" "web_servers_health_check" {
-  name = "Web Server Health Check"
-  type = "api"
-  subtype = "multi"
-  status  = "live"
-  message = "Alert! One of the web servers seems down. Notify: @pagerduty"
-  tags    = ["host:tfhexlet-1", "host:tfhexlet-2"]
+  name      = "Web Server Health Check"
+  type      = "api"
+  subtype   = "multi"
+  status    = "live"
+  message   = "Alert! One of the web servers seems down. Notify: @pagerduty"
+  tags      = ["host:tfhexlet-1", "host:tfhexlet-2"]
   locations = ["aws:eu-central-1"]
 
   api_step {
@@ -18,9 +18,9 @@ resource "datadog_synthetics_test" "web_servers_health_check" {
     }
 
     request_definition {
-      method = "GET"
-      url =  "http://${digitalocean_droplet.web-1.ipv4_address}"
-      port = var.app_port
+      method  = "GET"
+      url     = "http://${digitalocean_droplet.web-1.ipv4_address}"
+      port    = var.app_port
       timeout = 30
     }
   }
@@ -36,9 +36,9 @@ resource "datadog_synthetics_test" "web_servers_health_check" {
     }
 
     request_definition {
-      method = "GET"
-      url = "http://${digitalocean_droplet.web-2.ipv4_address}"
-      port = var.app_port
+      method  = "GET"
+      url     = "http://${digitalocean_droplet.web-2.ipv4_address}"
+      port    = var.app_port
       timeout = 30
     }
   }
