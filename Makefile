@@ -1,6 +1,9 @@
 INFRA_VAULT_PASSWORD_FILE := terraform/.infra.vault_pass
 ANSIBLE_VAULT_PASSWORD_FILE := ansible/group_vars/all/.vault_pass
 
+infra-format:
+	terraform -chdir=./terraform fmt
+
 infra-vault-decrypt:
 	ansible-vault decrypt terraform/secrets/vault.yaml --output=terraform/secrets/vault.decrypted.yaml --vault-password-file $(INFRA_VAULT_PASSWORD_FILE)
 
@@ -15,6 +18,7 @@ infra-generate-tf-vars:
 	$(MAKE) infra-template-tf-vars
 
 infra-init:
+	$(MAKE) infra-format
 	$(MAKE) infra-generate-tf-vars
 	terraform -chdir=./terraform init
 
@@ -23,14 +27,17 @@ infra-plan:
 	terraform -chdir=./terraform plan
 
 infra-apply:
+	$(MAKE) infra-format
 	$(MAKE) infra-generate-tf-vars
 	terraform -chdir=./terraform apply
 
 infra-destroy:
+	$(MAKE) infra-format
 	$(MAKE) infra-generate-tf-vars
 	terraform -chdir=./terraform destroy
 
 infra-output:
+	$(MAKE) infra-format
 	$(MAKE) infra-generate-tf-vars
 	terraform -chdir=./terraform output
 
