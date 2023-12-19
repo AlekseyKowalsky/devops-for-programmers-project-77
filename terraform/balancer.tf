@@ -48,10 +48,7 @@ resource "digitalocean_loadbalancer" "balancer" {
     protocol = "tcp"
   }
 
-  droplet_ids = [
-    digitalocean_droplet.web-1.id,
-    digitalocean_droplet.web-2.id,
-  ]
+  droplet_ids = [for droplet in digitalocean_droplet.web : droplet.id]
 }
 
 resource "digitalocean_record" "lb_dns" {
