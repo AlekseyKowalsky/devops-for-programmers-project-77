@@ -18,15 +18,6 @@ resource "digitalocean_droplet" "web" {
   ssh_keys = [data.digitalocean_ssh_key.key.id]
 }
 
-resource "digitalocean_droplet" "web-2" {
-  image  = "docker-20-04"
-  name   = "tfhexlet-2"
-  region = "fra1"
-  size   = "s-1vcpu-1gb"
-
-  ssh_keys = [data.digitalocean_ssh_key.key.id]
-}
-
 resource "terraform_data" "formatted_ips" {
   depends_on = [digitalocean_droplet.web]
 
