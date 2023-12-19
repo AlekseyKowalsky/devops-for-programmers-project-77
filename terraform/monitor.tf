@@ -4,42 +4,27 @@ resource "datadog_synthetics_test" "web_servers_health_check" {
   subtype   = "multi"
   status    = "live"
   message   = "Alert! One of the web servers seems down. Notify: @pagerduty"
-  tags      = ["host:tfhexlet-1", "host:tfhexlet-2"]
+  tags      = [for i in range(var.droplet_count) : "host:tfhexlet-${i + 1}"]
   locations = ["aws:eu-central-1"]
 
-  api_step {
-    name    = "Checking web-1 health"
-    subtype = "http"
+  dynamic "api_step" {
+    for_each = digitalocean_droplet.web
+    content {
+      name    = "Checking ${api_step.value.name} health"
+      subtype = "http"
 
-    assertion {
-      type     = "statusCode"
-      operator = "is"
-      target   = "200"
-    }
+      assertion {
+        type     = "statusCode"
+        operator = "is"
+        target   = "200"
+      }
 
-    request_definition {
-      method  = "GET"
-      url     = "http://${digitalocean_droplet.web-1.ipv4_address}"
-      port    = var.app_port
-      timeout = 30
-    }
-  }
-
-  api_step {
-    name    = "Checking web-2 health"
-    subtype = "http"
-
-    assertion {
-      type     = "statusCode"
-      operator = "is"
-      target   = "200"
-    }
-
-    request_definition {
-      method  = "GET"
-      url     = "http://${digitalocean_droplet.web-2.ipv4_address}"
-      port    = var.app_port
-      timeout = 30
+      request_definition {
+        method  = "GET"
+        url     = "http://${api_step.value.ipv4_address}"
+        port    = var.app_port
+        timeout = 30
+      }
     }
   }
 
